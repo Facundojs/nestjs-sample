@@ -11,28 +11,23 @@ import {
 } from '@nestjs/common';
 import { CoffeesService } from './coffees.service';
 import { CreateCoffeeDto } from './dto/create-coffee.dto';
-import { PatchCoffeeDto } from './dto/patch-coffee.dto';
+import { UpdateCoffeeDto } from './dto/update-coffee.dto';
+import { PaginationQueryDto } from 'src/common/dto/pagination-query.dto';
 
 @Controller('coffees')
 export class CoffeesController {
   constructor(private readonly coffeeService: CoffeesService) {}
 
   @Get()
-  findAll(@Query() pagination: { page: number; size: number }) {
-    const { page = 1, size = 10 } = pagination;
-    const coffees = this.coffeeService.findAll();
-    return {
-      data: coffees.slice((page - 1) * size, page * size),
-      total: coffees.length,
-      page,
-      size,
-    };
+  async findAll(@Query() paginationQueryDto: PaginationQueryDto) {
+    const { limit, offset } = paginationQueryDto;
+    const coffees = await this.coffeeService.findAll(paginationQueryDto);
+    return coffees;
   }
 
   @Get(':id')
-  findOne(@Param('id') id: number) {
-    console.log(typeof id);
-    const coffee = this.coffeeService.findOne(id);
+  async findOne(@Param('id') id: number) {
+    const coffee = await this.coffeeService.findOne(id);
     if (!coffee) {
       throw new NotFoundException(`Coffee #${id} not found`);
     }
@@ -45,12 +40,12 @@ export class CoffeesController {
   }
 
   @Patch(':id')
-  patch(@Body('body') body: PatchCoffeeDto, @Param('id') id: number) {
-    return this.coffeeService.patch(id, body);
+  async patch(@Body() body: UpdateCoffeeDto, @Param('id') id: number) {
+    return this.coffeeService.update(id, body);
   }
 
   @Delete(':id')
-  delete(@Param('id') id: number) {
-    return this.coffeeService.delete(id);
+  remove(@Param('id') id: number) {
+    return this.coffeeService.remove(id);
   }
 }
