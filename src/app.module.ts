@@ -5,6 +5,7 @@ import { CoffeesModule } from './coffees/coffees.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CoffeeRatingModule } from './coffee-rating/coffee-rating.module';
 import { ConfigModule } from '@nestjs/config';
+import { CommonModule } from './common.module';
 import * as Joi from '@hapi/joi';
 
 @Module({
@@ -26,10 +27,12 @@ import * as Joi from '@hapi/joi';
         DATABASE_PORT: Joi.number().port().default(5432),
         DATABASE_PASSWORD: Joi.string().required(),
         DATABASE_USER: Joi.string().required(),
+        API_KEY: Joi.string().required(),
       }),
     }),
     CoffeeRatingModule,
     CoffeesModule,
+    CommonModule,
   ],
   controllers: [AppController],
   providers: [AppService],
