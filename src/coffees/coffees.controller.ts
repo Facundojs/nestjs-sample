@@ -1,26 +1,28 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  NotFoundException,
-  Param,
-  Patch,
-  Post,
-  Query,
-} from '@nestjs/common';
-import { CoffeesService } from './coffees.service';
+import { PaginationQueryDto } from 'src/common/dto/pagination-query.dto';
+import { ApiForbiddenResponse, ApiTags } from '@nestjs/swagger';
 import { CreateCoffeeDto } from './dto/create-coffee.dto';
 import { UpdateCoffeeDto } from './dto/update-coffee.dto';
-import { PaginationQueryDto } from 'src/common/dto/pagination-query.dto';
+import { CoffeesService } from './coffees.service';
+import {
+  NotFoundException,
+  Controller,
+  Delete,
+  Param,
+  Patch,
+  Query,
+  Post,
+  Body,
+  Get,
+} from '@nestjs/common';
 
+@ApiTags('coffees')
 @Controller('coffees')
 export class CoffeesController {
   constructor(private readonly coffeeService: CoffeesService) {}
 
+  @ApiForbiddenResponse({ description: 'Forbidden.' })
   @Get()
   async findAll(@Query() paginationQueryDto: PaginationQueryDto) {
-    const { limit, offset } = paginationQueryDto;
     const coffees = await this.coffeeService.findAll(paginationQueryDto);
     return coffees;
   }

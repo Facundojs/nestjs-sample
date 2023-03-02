@@ -1,4 +1,5 @@
 import { Injectable, NestMiddleware } from '@nestjs/common';
+import crypto from 'crypto';
 
 @Injectable()
 export class LoggingMiddleware implements NestMiddleware {
